@@ -40,3 +40,8 @@ flask run
 ```sh  
 flask run  --debug
 ```
+
+## Jinja 2
+- What python gives you to manipulate your html
+- Improves DX
+    - Easy to create templates

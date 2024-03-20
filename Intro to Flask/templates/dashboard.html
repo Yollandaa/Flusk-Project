@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .movie-cont img{
+            height: 175px;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            display: flex;
+        }
+
+        .movies-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+        }
+
+        .poster {
+            border-radius: 10px;
+        }
+
+        .movie-cont {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- mustache -->
+    <!-- display profile picture on top of screen -->
+    <div class="movies-container">
+
+        {% for movie in movies %}
+        <div class="movie-cont">
+            <img class="poster" src="{{movie['poster']}}">
+            <p class="title">{{movie['name']}} <span class="rating">{{movie['rating']}}</span> </p>
+            <p class="summary"> {{movie['summary']}} </p>
+        </div>
+        {% endfor %}
+
+    </div>
+    
+    
+</body>
+</html>

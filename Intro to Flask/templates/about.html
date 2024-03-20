@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block body %}
+    <!-- mustache -->
+    <!-- display profile picture on top of screen -->
+    {% for user in users %}
+        <div class="profile">
+            <img class="profilec" src="{{user['pic']}}" alt="profile picture">
+            <p class="user-msg"> 
+            Hello, <span class="user-name">{{user['name']}}</span> {% if user['pro'] %} 🚀 {% else %} 🎉 {%endif %}
+            </p>
+        </div>
+
+{% endfor %} {% endblock %} 
+    <!-- {% for user in users %}
+    <div class="user-container">
+      <img class="user-pic" src="{{user.pic}}" alt="Profile picture" />
+      <p class="user-msg">
+        Hello,
+        <span class="user-name"
+          >{{user.name}} {{ "🚀" if user.pro else "🎊🎊" }}
+        </span>
+      </p>
+    </div>
+    {% endfor %} -->  
