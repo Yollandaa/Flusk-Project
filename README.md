@@ -45,3 +45,10 @@ flask run  --debug
 - What python gives you to manipulate your html
 - Improves DX
     - Easy to create templates
+
+## Installing Dependencies
+```sh
+pip install -r requirements.txt
+```
+- Sharing your project with others: If you share your project with others, you can include the requirements.txt file so that they can easily install the required packages.
+- Managing dependencies: By listing the dependencies of your project in a requirements.txt file, you can easily see what packages are required and what versions they need to be.

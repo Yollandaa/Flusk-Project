@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .body {
+            font-family: Roboto,sans-serif;
+        }
+        .title-container {
+            size: 100%;
+            display: flex;
+            justify-content: space-between; /* Align title and rating at the start and end respectively */
+        }
+        .title {
+        margin: 0;
+        font-weight: bold;
+        }
+        .movie-cont {
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+
+    <iframe width="720" height="400" src="{{movie.trailer}}" title="BEETLEJUICE BEETLEJUICE | Official Teaser Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <div class="movie-cont">
+        <div class="title-container">
+            <div class="title">{{movie['name']}} </div>
+            <div class="rating">⭐{{movie['rating']}}</div>
+        </div>
+        <p class="summary">{{movie['summary']}}</p>
+    </div>
+</body>
+</html>

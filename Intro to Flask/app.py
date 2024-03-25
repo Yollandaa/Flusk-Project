@@ -171,15 +171,33 @@ def max_plus_one():
 # <variable_name> | movie_id becomes the keyword arguement
 # Generator expression -> returns the first match only
 # -> The loop stops as soon as the first match is found
+# @app.get("/movies/<movie_id>")
+# def get_movie_by_id(movie_id):
+#     filtered_movies = next((movie for movie in movies if movie["id"] == movie_id), None)
+#     if filtered_movies:
+#         return jsonify(filtered_movies)
+#     return jsonify({"Error": "Movie not found"}), 404
+
+
+# Get method to get movie by id for frontend
 @app.get("/movies/<movie_id>")
 def get_movie_by_id(movie_id):
-    filtered_movies = next((movie for movie in movies if movie["id"] == movie_id), None)
-    if filtered_movies:
-        return jsonify(filtered_movies)
-    return jsonify({"Error": "Movie not found"}), 404
+    filtered_movie = next((movie for movie in movies if movie["id"] == movie_id), None)
+    if filtered_movie:
+        return render_template("movie-detail.html", movie=filtered_movie)
+    return "<h1>Movie not found</h1>"
 
 
 # Delete method to delete movie by id
+# @app.delete("/movies/<movie_id>")
+# def delete_movie_by_id(movie_id):
+#     filtered_movie = next((movie for movie in movies if movie["id"] == movie_id), None)
+#     if filtered_movie:
+#         movies.remove(filtered_movie)
+#         return jsonify(filtered_movie)
+#     return jsonify({"Error": "Movie not found"}), 404
+
+
 @app.delete("/movies/<movie_id>")
 def delete_movie_by_id(movie_id):
     filtered_movie = next((movie for movie in movies if movie["id"] == movie_id), None)
