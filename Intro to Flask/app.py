@@ -1,10 +1,83 @@
+import os
 import json
 from flask import Flask, jsonify, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import text
+from dotenv import load_dotenv
+from pprint import pprint
+
+load_dotenv()  # load -> temporary as env
 
 app = Flask(__name__)
+# mssql+pyodbc://<username>:<password>@<dsn_name>?driver=<driver_name>
 
-# Driver={ODBC Driver 18 for SQL Server};Server=tcp:yolanda-server.database.windows.net,1433;Database=moviesdb;Uid=yolandadastile;Pwd={your_password_here};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;
+connection_String = os.environ.get("AZURE_DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"] = connection_String
+db = SQLAlchemy(app)
 
+try:
+    with app.app_context():
+        # Use text() to explicitly declare your SQL command
+        result = db.session.execute(text("SELECT 1")).fetchall()
+        print("Connection successful:", result)
+except Exception as e:
+    print("Error connecting to the database:", e)
+
+# Model (SQLAlchemy) == Schema
+
+# CREATE TABLE movies (
+#     id VARCHAR(50) PRIMARY KEY,
+#     name VARCHAR(100),
+#     poster VARCHAR(255),
+#     rating FLOAT,
+#     summary VARCHAR(500),
+# 	trailer VARCHAR(255)
+# );
+
+
+class Movie(db.Model):
+    # Table name we pointing it to
+    __tablename__ = "movies"
+    id = db.Column(db.String(50), primary_key=True)
+    name = db.Column(db.String(100))
+    poster = db.Column(db.String(255))
+    rating = db.Column(db.Float)
+    summary = db.Column(db.String(500))
+    trailer = db.Column(db.String(255))
+
+    def to_dict(self):
+
+        return {
+            "id": self.id,
+            "name": self.name,
+            "poster": self.poster,
+            "rating": self.rating,
+            "summary": self.summary,  # Naming it whatever you want
+            "trailer": self.trailer,
+        }
+
+
+# Get the data from the moviesdb we created
+@app.route("/movies-list")
+def get_movies():
+    movies_list = Movie.query.all()
+    # data = [movie.to_dict() for movie in movies_list] # This makes no difference
+    return render_template("movies-list.html", movies=movies_list)
+
+
+@app.route("/movie-list/<movie_id>")
+def get_movie_by_id(movie_id):
+    filtered_movies = Movie.query.get(movie_id)
+    if filtered_movies:
+        # data = filtered_movies.to_dict()
+        return render_template("movie-detail.html", movie=filtered_movies)
+    return "<h1>Movie Not Found</h1>"
+
+
+# Delete a movie
+
+# local
+# /dashboard
 movies = [
     {
         "id": "99",
@@ -181,13 +254,13 @@ def max_plus_one():
 #     return jsonify({"Error": "Movie not found"}), 404
 
 
-# Get method to get movie by id for frontend
-@app.get("/movies/<movie_id>")
-def get_movie_by_id(movie_id):
-    filtered_movie = next((movie for movie in movies if movie["id"] == movie_id), None)
-    if filtered_movie:
-        return render_template("movie-detail.html", movie=filtered_movie)
-    return "<h1>Movie not found</h1>"
+# # Get method to get movie by id for frontend
+# @app.get("/movies/<movie_id>")
+# def get_movie_by_id(movie_id):
+#     filtered_movie = next((movie for movie in movies if movie["id"] == movie_id), None)
+#     if filtered_movie:
+#         return render_template("movie-detail.html", movie=filtered_movie)
+#     return "<h1>Movie not found</h1>"
 
 
 # Delete method to delete movie by id
