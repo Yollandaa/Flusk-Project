@@ -52,7 +52,11 @@
         display: flex;
         justify-content: space-between; /* Align title and rating at the start and end respectively */
     }
-
+    .movie-actions {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
 
     </style>
 </head>
@@ -67,7 +71,10 @@
                 <div class="rating">⭐{{movie['rating']}}</div>
             </div>
             <p class="summary">{{movie['summary']}}</p>
-            <a href="/movies/{{ movie['id'] }}"> Read More ...</a>
+            <div class="movie-actions">
+                <a href="/movies/{{ movie['id'] }}"> View more</a>
+                <a href="/movies/{{ movie['id'] }}"> Delete </a>
+            </div>
         </div>
         {% endfor %}
     

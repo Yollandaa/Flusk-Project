@@ -141,25 +141,25 @@ def about_page():
 
 
 # Create dashboard page to list the movies
-@app.route("/dashboard")
-def dashboard_page():
-    return render_template("dashboard.html", movies=movies)
+@app.route("/movies-list")
+def movies_page():
+    return render_template("movies-list.html", movies=movies)
 
 
 # /movies -> json
-@app.get("/movies")
-def get_movies():
-    return jsonify(movies)
+# @app.get("/movies")
+# def get_movies():
+#     return jsonify(movies)
 
 
 # post method to add movies
-@app.post("/movies")
-def add_movie():
-    new_movie = request.json
-    # edit the new movie so that the id is the max_id + 1 from the movies_list
-    new_movie["id"] = max_plus_one()
-    movies.append(new_movie)
-    return jsonify(new_movie)
+# @app.post("/movies")
+# def add_movie():
+#     new_movie = request.json
+#     # edit the new movie so that the id is the max_id + 1 from the movies_list
+#     new_movie["id"] = max_plus_one()
+#     movies.append(new_movie)
+#     return jsonify(new_movie)
 
 
 def max_plus_one():
@@ -228,3 +228,43 @@ def update_movie_by_id(movie_id):
 # if __name__ == "__main__":
 #     max_plus_one()
 #     app.run(debug=True)
+
+
+@app.route("/login", methods=["GET"])
+def login_page():
+    return render_template("forms.html")
+
+
+@app.route("/dashboard", methods=["POST"])
+def dashboard_page():
+    username = request.form.get("username")
+    password = request.form.get("password")
+    print("Dashboard page", username, password)
+    return f"<h1>Hello, {username}</h1>"
+    # return render_template("dashboard.html")
+
+
+@app.route("/add-movie", methods=["GET"])
+def add_movie_page():
+    return render_template("add-movie.html")
+
+
+@app.route("/movies", methods=["POST"])
+def all_movies():
+    name = request.form.get("name")
+    poster = request.form.get("poster")
+    rating = request.form.get("rating")
+    summary = request.form.get("summary")
+    trailer = request.form.get("trailer")
+    # add the movie to the list
+    movies.append(
+        {
+            "name": name,
+            "poster": poster,
+            "rating": rating,
+            "summary": summary,
+            "trailer": trailer,
+        }
+    )
+    # return the movie added
+    return render_template("movies-list.html", movies=movies)

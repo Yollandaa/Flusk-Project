@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .add-movie-form {
+            display: grid;
+            /* background-color: orange; */
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Create a form to add movies -->
+    <form action="{{url_for('all_movies')}}" class="add-movie-form" method="POST">
+        <input type="text" name="name" placeholder="name"/>
+        <input type="text" name="poster" placeholder="poster"/>
+        <input type="text" name="rating" placeholder="rating"/>
+        <input type="text" name="summary" placeholder="summary"/>
+        <input type="text" name="trailer" placeholder="trailer"/>
+        <button> Submit </button>
+
+    </form>
+</body>
+</html>

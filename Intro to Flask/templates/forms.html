@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .login-form {
+            display: grid;
+            /* background-color: orange; */
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+    <form class="login-form" 
+    action="{{url_for('dashboard_page')}}"
+    method="POST">
+        <input type="text" name="username" placeholder="Username" />
+        <input type="text" name="password" placeholder="Password" />
+        <button> Submit </button>
+    </form>
+</body>
+</html>
