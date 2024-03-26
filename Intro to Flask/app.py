@@ -3,6 +3,8 @@ from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
 
+# Driver={ODBC Driver 18 for SQL Server};Server=tcp:yolanda-server.database.windows.net,1433;Database=moviesdb;Uid=yolandadastile;Pwd={your_password_here};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;
+
 movies = [
     {
         "id": "99",
@@ -259,6 +261,7 @@ def all_movies():
     # add the movie to the list
     movies.append(
         {
+            "id": max_plus_one(),
             "name": name,
             "poster": poster,
             "rating": rating,
