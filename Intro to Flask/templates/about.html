@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% block body %}
+{% extends 'base.html' %} 
+{% block body %}
     <!-- mustache -->
     <!-- display profile picture on top of screen -->
     {% for user in users %}
@@ -9,7 +10,8 @@
             </p>
         </div>
 
-{% endfor %} {% endblock %} 
+{% endfor %} 
+{% endblock %} 
     <!-- {% for user in users %}
     <div class="user-container">
       <img class="user-pic" src="{{user.pic}}" alt="Profile picture" />
