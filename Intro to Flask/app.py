@@ -58,7 +58,7 @@ class Movie(db.Model):
         }
 
 
-# Get the data from the moviesdb we created
+# Get all movies
 @app.route("/movies-list")
 def get_movies():
     movies_list = Movie.query.all()
@@ -71,74 +71,11 @@ def get_movies():
 def get_movie_by_id(movie_id):
     filtered_movies = Movie.query.get(movie_id)
     if filtered_movies:
-        # data = filtered_movies.to_dict()
         return render_template("movie-detail.html", movie=filtered_movies)
     return "<h1>Movie Not Found</h1>"
 
 
-# Delete a movie
-@app.route("/movies/<movie_id>", methods=["GET"])
-def delete_movie_by_id(movie_id):
-    # filtered_movie = Movie.query.get(movie_id)  # get the movie first
-    # if not filtered_movie:
-    #     return "<h1>Movie Not Found</h1>"
-    # try:
-    #     db.session.delete(filtered_movie)
-    #     db.session.commit()  # If you don't call commit, the change is not permanent
-    return "<h1>Movie Deleted Successfully</h1>"
-
-
-# except Exception as e:
-#     db.session.rollback()  # Undo any changes
-#     return "<h1>Database Error</h1>"  # 500 Error
-
-
-# Update method to update movie by id for postman
-@app.put("/movies/<movie_id>")
-def update_movie_by_id(movie_id):
-    filtered_movie = Movie.query.get(movie_id)
-    update_data = request.json
-    print(type(update_data))
-
-    if not filtered_movie:
-        return "<h1>Movie Not Found</h1>"
-
-    try:
-        # filtered_movie.name = update_data.get("name", filtered_movie.name)
-        # filtered_movie.poster = update_data.get("poster", filtered_movie.poster)
-        # filtered_movie.rating = update_data.get("rating", filtered_movie.rating)
-        # filtered_movie.summary = update_data.get("summary", filtered_movie.summary)
-        # filtered_movie.trailer = update_data.get("trailer", filtered_movie.trailer)
-
-        # Shorten the above
-        for key, value in update_data.items():
-            if hasattr(filtered_movie, key):
-                setattr(filtered_movie, key, value)
-
-        db.session.commit()
-        return jsonify(filtered_movie.to_dict())
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)})
-
-
-# post method to add movies
-@app.post("/movies")
-def add_movie():
-    data = request.json
-    new_movie = Movie(
-        **data
-    )  # Rule the keys must be the same, if there's id (that one will be choosen)
-    try:
-        db.session.add(new_movie)
-        db.session.commit()
-        result = {"message": "Movie added successfully", "data": new_movie.to_dict()}
-    except Exception as e:
-        db.session.rollback()
-        result = {"message": "Movie failed to Add", "error": str(e)}
-    return jsonify(result), 500
-
-
+# Adding new movie
 @app.route("/movie-added", methods=["POST"])
 def create_movie():
     name = request.form.get("name")
@@ -150,22 +87,62 @@ def create_movie():
     new_movie = Movie(
         name=name, poster=poster, rating=rating, summary=summary, trailer=trailer
     )
-    db.session.add(new_movie)
-    db.session.commit()
+    try:
+        db.session.add(new_movie)
+        db.session.commit()
+        return render_template("movies-list.html", movies=Movie.query.all())
+    except Exception as e:
+        db.session.rollback()
+        return f"<h1>Create Failed {str(e)}</h1>", 500
 
-    return render_template("movies-list.html", movies=Movie.query.all())
+
+# Delete Movie
+@app.route("/movie-list/delete", methods=["POST"])  # HOF
+def delete_movie_by_id():
+    movie_id = request.form.get("movie_id")
+    filtered_movie = Movie.query.get(movie_id)  # get the movie first
+    if not filtered_movie:
+        return "<h1>Movie Not Found</h1>", 404
+    try:
+        db.session.delete(filtered_movie)
+        db.session.commit()
+        return "<h1>Movie deleted Successfully</h1>"
+    except Exception as e:
+        db.session.rollback()
+        return f"<h1>Delete Failed {str(e)}</h1>", 500
 
 
-# Update a movie using id for front-end
-# @app.route("/movies/<movie_id>")
-# def update_movie_by_id(movie_id):
-#     update_data = request.json
-#     filtered_movie = Movie.query.get(movie_id)  # get the movie first
-#     if filtered_movie:
-#         filtered_movie.update(update_data)
-#         db.session.commit()
-#         return render_template("update-movie.html", movie=filtered_movie)
-#     return "<h1>Movie Not Found</h1>"
+#  Update a movie
+@app.route("/movies/update", methods=["POST"])
+def update_movie_by_id():
+    movie_id = request.form.get("movie_id")
+    print("This is the id: ", movie_id)
+    filtered_movie = Movie.query.get(movie_id)
+    update_data = {}
+    # Get the data via request.form.get
+    if request.form.get("name"):
+        update_data["name"] = request.form.get("name")
+    if request.form.get("poster"):
+        update_data["poster"] = request.form.get("poster")
+    if request.form.get("rating"):
+        update_data["rating"] = request.form.get("rating")
+    if request.form.get("summary"):
+        update_data["summary"] = request.form.get("summary")
+    if request.form.get("trailer"):
+        update_data["trailer"] = request.form.get("trailer")
+
+    if not filtered_movie:
+        return "<h1> Movie Not Found</h1>"
+
+    try:
+        for key, value in update_data.items():
+            if hasattr(filtered_movie, key):
+                setattr(filtered_movie, key, value)
+        db.session.commit()
+        return
+    except Exception as e:
+        db.session.rollback()
+        return f"<h1> Movie not Updated: {str(e)}</h1>"
 
 
 # local
@@ -229,3 +206,58 @@ def dashboard_page():
 @app.route("/add-movie", methods=["GET"])
 def add_movie_page():
     return render_template("add-movie.html")
+
+
+@app.route("/update-movie", methods=["GET", "POST"])
+def update_movie_page():
+    movie_id = request.form.get("movie_id")
+    movie = Movie.query.get(movie_id)
+    return render_template("update-movie.html", movie=movie)
+
+
+#  ---------------- POSTMAN STUFF --------------------------------
+
+# Creating new movie
+# @app.post("/movies")
+# def add_movie():
+#     data = request.json
+#     new_movie = Movie(
+#         **data
+#     )  # Rule the keys must be the same, if there's id (that one will be choosen)
+#     try:
+#         db.session.add(new_movie)
+#         db.session.commit()
+#         result = {"message": "Movie added successfully", "data": new_movie.to_dict()}
+#     except Exception as e:
+#         db.session.rollback()
+#         result = {"message": "Movie failed to Add", "error": str(e)}
+#     return jsonify(result), 500
+
+
+# Update method to update movie by id for postman
+# @app.put("/movies/<movie_id>")
+# def update_movie_by_id(movie_id):
+#     filtered_movie = Movie.query.get(movie_id)
+#     update_data = request.json
+#     print(type(update_data))
+
+#     if not filtered_movie:
+#         return "<h1>Movie Not Found</h1>"
+
+#     try:
+#         # filtered_movie.name = update_data.get("name", filtered_movie.name)
+#         # filtered_movie.poster = update_data.get("poster", filtered_movie.poster)
+#         # filtered_movie.rating = update_data.get("rating", filtered_movie.rating)
+#         # filtered_movie.summary = update_data.get("summary", filtered_movie.summary)
+#         # filtered_movie.trailer = update_data.get("trailer", filtered_movie.trailer)
+
+#         # Shorten the above
+#         for key, value in update_data.items():
+#             if hasattr(filtered_movie, key):
+#                 setattr(filtered_movie, key, value)
+
+#         db.session.commit()
+#         return jsonify(filtered_movie.to_dict())
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({"error": str(e)})
