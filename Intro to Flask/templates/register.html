@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Register:</h1>
+    <!-- If action is empty -> refers to the same url you are currently on -->
+    <form method="POST" action=""> 
+        <!-- Hidden input field: CRS-->
+        {{form.hidden_tag()}}
+
+        {% if form.username.errors %}
+            <!-- Loop through the errors -->
+            {% for error in form.username.errors %}
+                <div style="color:red;">{{error}}</div>
+            {%endfor %}
+        {%endif%}
+
+        {{form.username.label}}:
+        {{form.username(placeholder="Enter your username")}} <br/>
+
+        {{form.password.label}}:
+        {{form.password(placeholder="Enter your password")}} <br/>
+
+        {{form.submit()}}
+    </form>
+</body>
+</html>
