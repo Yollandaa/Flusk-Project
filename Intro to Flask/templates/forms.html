@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        .login-form {
+        .login-form, .signup-form {
             display: grid;
             /* background-color: orange; */
             gap: 12px;
@@ -13,12 +13,25 @@
     </style>
 </head>
 <body>
+    <h1> {{id}} </h1>
+
+    {%if id=="login"%}
     <form class="login-form" 
-    action="{{url_for('dashboard_page')}}"
+    action="{{url_for('users.validate_login')}}"
     method="POST">
         <input type="text" name="username" placeholder="Username" />
         <input type="text" name="password" placeholder="Password" />
         <button> Submit </button>
     </form>
+    {% else %}
+    <form class="signup-form" 
+    action="{{url_for('users.sign_in')}}"
+    method="POST">
+        <input type="text" name="username" placeholder="Username" />
+        <input type="text" name="password" placeholder="Password" />
+        <button> Submit </button>
+    </form>
+    {% endif %}
+    
 </body>
 </html>

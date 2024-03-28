@@ -99,23 +99,9 @@ def profile_page():
 from movies_bp import movies_bp
 from about_bp import about_bp
 from movielist_bp import movielist_bp
+from users_bp import users_bp
 
 app.register_blueprint(movies_bp, url_prefix="/movies")
 app.register_blueprint(movielist_bp, url_prefix="/movie-list")
 app.register_blueprint(about_bp, url_prefix="/about")
-
-
-@app.route("/login", methods=["GET"])
-def login_page():
-    return render_template("forms.html")
-
-
-@app.route("/dashboard", methods=["POST"])
-def dashboard_page():
-    username = request.form.get("username")
-    password = request.form.get("password")
-    # check if username and password are correct from users db
-
-    print("Dashboard page", username, password)
-    return f"<h1>Hello, {username}</h1>"
-    # return render_template("dashboard.html")
+app.register_blueprint(users_bp, url_prefix="/users")
