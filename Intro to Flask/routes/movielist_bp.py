@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, render_template
+from flask import Blueprint, request, render_template
 from extensions import db
 from models.movie import Movie
 

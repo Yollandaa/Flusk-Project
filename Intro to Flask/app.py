@@ -17,6 +17,8 @@ app.config["SECRET_KEY"] = os.environ.get(
 
 connection_String = os.environ.get("AZURE_DATABASE_URL")
 app.config["SQLALCHEMY_DATABASE_URI"] = connection_String
+
+db.init_app(app)
 # db = SQLAlchemy(app)
 
 try:
@@ -36,11 +38,11 @@ except Exception as e:
 # Improves DX
 
 
-from movies_bp import movies_bp
-from about_bp import about_bp
-from movielist_bp import movielist_bp
-from users_bp import users_bp
-from main_bp import main_bp
+from routes.movies_bp import movies_bp
+from routes.about_bp import about_bp
+from routes.movielist_bp import movielist_bp
+from routes.users_bp import users_bp
+from routes.main_bp import main_bp
 
 app.register_blueprint(main_bp, url_prefix="/main")
 app.register_blueprint(movies_bp, url_prefix="/movies")

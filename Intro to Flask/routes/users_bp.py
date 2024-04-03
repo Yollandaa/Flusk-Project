@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template
 from extensions import db
 from models.users import User
 from wtforms import PasswordField, StringField, SubmitField, ValidationError
