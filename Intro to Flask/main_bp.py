@@ -14,3 +14,8 @@ def hello_world():
 @main_bp.route("/profile")
 def profile_page():
     return render_template("profile.html", name=name, hobbies=hobbies)
+
+
+@main_bp.route("/sample")
+def sample():
+    return render_template("sample.html")

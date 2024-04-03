@@ -6,6 +6,7 @@ from sqlalchemy.sql import text
 from dotenv import load_dotenv
 from pprint import pprint
 import uuid
+from extensions import db
 
 load_dotenv()  # load -> temporary as env
 app = Flask(__name__)
@@ -16,58 +17,7 @@ app.config["SECRET_KEY"] = os.environ.get(
 
 connection_String = os.environ.get("AZURE_DATABASE_URL")
 app.config["SQLALCHEMY_DATABASE_URI"] = connection_String
-db = SQLAlchemy(app)
-
-# Model (SQLAlchemy) == Schema
-
-# CREATE TABLE movies (
-#     id VARCHAR(50) PRIMARY KEY,
-#     name VARCHAR(100),
-#     poster VARCHAR(255),
-#     rating FLOAT,
-#     summary VARCHAR(500),
-# 	trailer VARCHAR(255)
-# );
-
-
-class Movie(db.Model):
-    # Table name we pointing it to
-    __tablename__ = "movies"
-    id = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = db.Column(db.String(100))
-    poster = db.Column(db.String(255))
-    rating = db.Column(db.Float)
-    summary = db.Column(db.String(500))
-    trailer = db.Column(db.String(255))
-
-    def to_dict(self):
-
-        return {
-            "id": self.id,
-            "name": self.name,
-            "poster": self.poster,
-            "rating": self.rating,
-            "summary": self.summary,  # Naming it whatever you want
-            "trailer": self.trailer,
-        }
-
-
-# Task - User Model | id, username, password
-# Sign Up page
-# Login page
-class User(db.Model):
-    __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True, default=lambda: str(uuid.uuid4()))
-    username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(100), nullable=False)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "username": self.username,
-            "password": self.password,
-        }
-
+# db = SQLAlchemy(app)
 
 try:
     with app.app_context():

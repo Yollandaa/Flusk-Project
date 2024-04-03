@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, render_template
-from app import Movie, db
+from extensions import db
+from models.movie import Movie
 
 movielist_bp = Blueprint("movies-list", __name__)
 
