@@ -85,25 +85,14 @@ except Exception as e:
 # What python gives you to manipulate your html
 # Improves DX
 
-name = "Caleb"
-hobbies = ["Gaming", "Reading", "Soccer", "Ballet", "Gyming", "Yoga"]
-
-
-@app.route("/")
-def hello_world():
-    return "<h1>Hello, Sanlam! 😀</h1>"
-
-
-@app.route("/profile")
-def profile_page():
-    return render_template("profile.html", name=name, hobbies=hobbies)
-
 
 from movies_bp import movies_bp
 from about_bp import about_bp
 from movielist_bp import movielist_bp
 from users_bp import users_bp
+from main_bp import main_bp
 
+app.register_blueprint(main_bp, url_prefix="/main")
 app.register_blueprint(movies_bp, url_prefix="/movies")
 app.register_blueprint(movielist_bp, url_prefix="/movie-list")
 app.register_blueprint(about_bp, url_prefix="/about")
