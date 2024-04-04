@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template
+from flask_login import login_required
 from extensions import db
 from models.movie import Movie
 
@@ -7,6 +8,7 @@ movielist_bp = Blueprint("movies-list", __name__)
 
 # Get all movies
 @movielist_bp.route("/")
+@login_required
 def get_movies():
     movies_list = Movie.query.all()
     # data = [movie.to_dict() for movie in movies_list] # This makes no difference

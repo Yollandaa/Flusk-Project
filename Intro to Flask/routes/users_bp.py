@@ -1,9 +1,12 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, flash, redirect, url_for
+from flask_login import login_user
 from extensions import db
 from models.users import User
 from wtforms import PasswordField, StringField, SubmitField, ValidationError
 from wtforms.validators import InputRequired, Length
 from flask_wtf import FlaskForm
+from app import login_manager
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 users_bp = Blueprint("users", __name__)
@@ -42,7 +45,11 @@ class LoginForm(FlaskForm):
         if user:
             user_db_data = user.to_dict()
             form_password = field.data
-            if user_db_data["password"] != form_password:
+
+            # Have to convert the password given to a hash and compare
+            # if user_db_data["password"] != form_password:
+            # First starts with the hash value password then the plaintext password
+            if not check_password_hash(user_db_data["password"], form_password):
                 print(user_db_data["password"])
                 raise ValidationError("Incorrect password")
 
@@ -56,14 +63,16 @@ def register():
         username = form.username.data
         password = form.password.data
 
-        new_user = User(username=username, password=password)
+        password_hash = generate_password_hash(password)
+        # print(password), generate_password_hash(password)
+        new_user = User(username=username, password=password_hash)
         try:
             db.session.add(new_user)
             db.session.commit()
             return f"<h1> {username} Registration successful </h1>", 201
         except Exception as e:
             db.session.rollback()
-            return f"<h1> Registration Failed </h1>", 404
+            return f"<h1> Registration Failed </h1>, {e}</h1>"
 
     # ONLY GET
     return render_template("register.html", form=form)
@@ -81,9 +90,18 @@ def login():
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
-        return "<h1>Successfully logged in</h1>"
+        user = User.query.filter_by(username=username).first()
+        login_user(user)  # token is issued - (cookies) stored in the browser
+        flash("Logged in successfully", "sucess")
+        # return "<h1>Successfully logged in</h1>"
+        return redirect(url_for("movies-list.get_movies"))
 
     return render_template("login.html", form=form)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
 
 
 # ---------------------------- Using HTML ----------------------------------
