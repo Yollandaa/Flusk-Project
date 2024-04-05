@@ -15,8 +15,8 @@ app.config["SECRET_KEY"] = os.environ.get(
 )  # token, different for each user -> should be hidden
 # mssql+pyodbc://<username>:<password>@<dsn_name>?driver=<driver_name>
 
-# connection_String = os.environ.get("AZURE_DATABASE_URL")
-connection_String = os.environ.get("LOCAL_DATABASE_URL")
+connection_String = os.environ.get("AZURE_DATABASE_URL")
+# connection_String = os.environ.get("LOCAL_DATABASE_URL")
 app.config["SQLALCHEMY_DATABASE_URI"] = connection_String
 
 db.init_app(app)
